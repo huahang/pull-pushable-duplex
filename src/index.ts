@@ -333,12 +333,12 @@ export class PushableDuplex<In, Out, State> implements pull.Duplex<In, Out> {
   private finish() {
     if (this.sourceState.finished && this._opts.onSourceEnded && !this._onSourceEndedCalled) {
       this._onSourceEndedCalled = true
-      this._opts.onSourceEnded(this.sourceState.finished)
+      this._opts.onSourceEnded(trueToNull(this.sourceState.finished))
     }
 
     if (this.sinkState.finished && this._opts.onSinkEnded && !this._onSinkEndedCalled) {
       this._onSinkEndedCalled = true
-      this._opts.onSinkEnded(this.sinkState.finished)
+      this._opts.onSinkEnded(trueToNull(this.sinkState.finished))
     }
 
     if (this.sourceState.finished && this.sinkState.finished) {
