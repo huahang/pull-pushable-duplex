@@ -111,6 +111,10 @@ describe('abort', () => {
       expect(err).toBeNull()
       expect(results).toEqual(['a', 'b'])
     })
+    const sourceCallback = jest.fn((e: pull.EndOrError, v: any) => {
+      expect(e).toBe(abort)
+      expect(v).toBeUndefined()
+    })
     const d = new PushableDuplex({
       allowHalfOpen: true,
       onRead: valuesToRead([1, 2, 3]),
@@ -121,6 +125,7 @@ describe('abort', () => {
         expect(err).toBe(abort)
         expect(onSourceEnded).toBeCalled()
         expect(onSinkEnded).toBeCalled()
+        expect(sourceCallback).toBeCalled()
         done()
       },
       onSourceEnded: onSourceEnded,
@@ -130,10 +135,7 @@ describe('abort', () => {
     d.source(null, (e: pull.EndOrError, v: any) => {
       expect(e).toBeNull()
       expect(v).toEqual(1)
-      d.source(abort, (e: pull.EndOrError, v: any) => {
-        expect(e).toBe(abort)
-        expect(v).toBeUndefined()
-      })
+      d.source(abort, sourceCallback)
     })
   })
 })
